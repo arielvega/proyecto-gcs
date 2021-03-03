@@ -20,6 +20,9 @@ lazy val gcsApp = (project in file("gcs-app"))
     rpmUrl := Some("http://uagrm.edu.bo"),
     rpmLicense := Some("Open Source"),
     rpmRequirements := Seq("nginx","java-1.8.0-openjdk"),
+    maintainerScripts in Rpm := maintainerScriptsAppend((maintainerScripts in Rpm).value)(
+      Post -> "sudo chown -R gcs-app:gcs-app /usr/share/gcs-app/"
+    ),
     scalacOptions ++= Seq(
       "-feature",
       "-deprecation",
