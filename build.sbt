@@ -1,3 +1,4 @@
+import RpmConstants._
 
 lazy val gcsApp = (project in file("gcs-app"))
   .enablePlugins(PlayScala, RpmPlugin, SystemVPlugin)
@@ -19,6 +20,9 @@ lazy val gcsApp = (project in file("gcs-app"))
     rpmUrl := Some("http://uagrm.edu.bo"),
     rpmLicense := Some("Open Source"),
     rpmRequirements := Seq("nginx","java-1.8.0-openjdk"),
+    maintainerScripts in Rpm := Map(
+      Post -> Seq("""sudo chown -R gcs-app:gcs-app /usr/share/gcs-app/"""),
+    ),
     scalacOptions ++= Seq(
       "-feature",
       "-deprecation",
