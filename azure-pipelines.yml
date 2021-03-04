@@ -7,9 +7,7 @@ trigger:
 - master
 
 pool:
-  vmImage: "ubuntu 20.04"
-
-container: centos:7
+  vmImage: "Ubuntu 20.04"
 
 steps:
 - script: echo "Compilar y correr las pruebas unitarias"
