@@ -22,7 +22,7 @@ lazy val gcsApp = (project in file("gcs-app"))
     rpmRequirements := Seq("nginx","java-1.8.0-openjdk"),
     maintainerScripts in Rpm := maintainerScriptsAppend((maintainerScripts in Rpm).value)(
       Post -> "sudo chown -R gcs-app:gcs-app /usr/share/gcs-app/",
-      Postun -> Seq("sudo rm -Rf /usr/share/gcs-app","sudo rm -Rf /var/log/gcs-app")
+      Postun -> "sudo rm -Rf /usr/share/gcs-app && sudo rm -Rf /var/log/gcs-app"
     ),
     scalacOptions ++= Seq(
       "-feature",
