@@ -7,14 +7,14 @@ trigger:
 - master
 
 pool:
-  vmImage: ubuntu-latest
+  vmImage: "ubuntu 20.04"
 
 container: centos:7
 
 steps:
-- script: echo Compilar y correr las pruebas unitarias
+- script: echo "Compilar y correr las pruebas unitarias"
   displayName: 'Commit Check'
 
 - script: |
-    echo Correr las pruebas de integración
+    echo "Correr las pruebas de integracion"
   displayName: 'Integration Tests'
