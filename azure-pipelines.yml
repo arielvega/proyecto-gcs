@@ -40,6 +40,7 @@ steps:
         sleep 1
       done
       >&2 echo "Database lista! ;)"
+      sudo bash -c "echo '127.0.0.1    dbserver' >> /etc/hosts"
       sbt "project gcsAppIT" test
       echo 'Pruebas de integracion ejecutadas'
       echo 'Empaquetando'
