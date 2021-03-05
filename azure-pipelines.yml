@@ -15,6 +15,8 @@ steps:
     targetType: 'inline'
     script: |
       echo 'Preparar ambiente' 
+      dpkg -S $(which java)
+      dpkg -S $(which javac)
       sudo apt -y update
       sudo apt purge default-jre
       sudo apt purge openjdk*
