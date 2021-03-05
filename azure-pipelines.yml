@@ -10,18 +10,21 @@ pool:
   vmImage: ubuntu-latest
 
 steps:
+
+- task: JavaToolInstaller@0
+  inputs:
+    versionSpec: '8'
+    jdkArchitectureOption: 'x64'
+    jdkSourceOption: 'PreInstalled'
+
 - task: Bash@3
+
   inputs:
     targetType: 'inline'
     script: |
-      echo 'Preparar ambiente' 
-      java -version
-      dpkg -S $(which java)
-      dpkg -S $(which javac)
+      echo 'Preparar ambiente'
       sudo apt -y update
-      sudo apt purge default-jre
-      sudo apt purge openjdk*
-      sudo apt -y install curl openjdk-8-jdk openjdk-8-jre
+      sudo apt -y install curl
       echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
       sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
       sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
