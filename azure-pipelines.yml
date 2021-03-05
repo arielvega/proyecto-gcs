@@ -15,6 +15,7 @@ steps:
     targetType: 'inline'
     script: |
       echo 'Preparar ambiente' 
+      java -version
       dpkg -S $(which java)
       dpkg -S $(which javac)
       sudo apt -y update
