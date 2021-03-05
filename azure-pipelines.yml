@@ -36,11 +36,11 @@ steps:
       echo 'Ejecutando pruebas de integracion'
       sudo systemctl start docker
       sudo docker run -e POSTGRES_PASSWORD=gcs -e POSTGRES_USER=gcs -e POSTGRES_DB=gcs -p 127.0.0.1:5432:5432 postgres:9.5 &
-      until psql -h "127.0.0.1" -U "postgres" -c '\l'; do
-        >&2 echo "Postgres is unavailable - sleeping"
+      until psql -h "127.0.0.1" -U "gcs" -c '\l'; do
+        >&2 echo "Database no esta lista - esperando..."
         sleep 1
       done
-      >&2 echo "Database is up ;)"
+      >&2 echo "Database lista! ;)"
       sbt "project gcsAppIT" test
       echo 'Pruebas de integracion ejecutadas'
       echo 'Empaquetando'
