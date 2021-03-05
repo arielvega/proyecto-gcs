@@ -50,6 +50,8 @@ steps:
       mkdir ~/.ssh
       echo $(PIPELINES_SSH_KEY) | base64 -di > ~/.ssh/id_rsa
       sudo chmod 600 ~/.ssh/id_rsa
+      ssh -o "StrictHostKeyChecking no" azureuser@$(WEBSERVER_PUBLIC_IP) "sudo sed -i '/dbserver/d' /etc/hosts"
+      ssh -o "StrictHostKeyChecking no" azureuser@$(WEBSERVER_PUBLIC_IP) "sudo bash -c \"echo '$(DATABASE_LOCAL_IP)    dbserver' >> /etc/hosts\""
       scp -o "StrictHostKeyChecking no" ~/gcs-app-2.8.x-1.noarch.rpm azureuser@$(WEBSERVER_PUBLIC_IP):.
       ssh -o "StrictHostKeyChecking no" azureuser@$(WEBSERVER_PUBLIC_IP) "dnf install -y ~/gcs-app-2.8.x-1.noarch.rpm"
       
