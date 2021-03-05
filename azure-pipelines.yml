@@ -54,5 +54,5 @@ steps:
       ssh -o "StrictHostKeyChecking no" azureuser@$(WEBSERVER_PUBLIC_IP) "sudo sed -i '/dbserver/d' /etc/hosts"
       ssh -o "StrictHostKeyChecking no" azureuser@$(WEBSERVER_PUBLIC_IP) "sudo bash -c \"echo '$(DATABASE_LOCAL_IP)    dbserver' >> /etc/hosts\""
       scp -o "StrictHostKeyChecking no" ~/gcs-app-2.8.x-1.noarch.rpm azureuser@$(WEBSERVER_PUBLIC_IP):.
-      ssh -o "StrictHostKeyChecking no" azureuser@$(WEBSERVER_PUBLIC_IP) "dnf install -y ~/gcs-app-2.8.x-1.noarch.rpm"
+      ssh -o "StrictHostKeyChecking no" azureuser@$(WEBSERVER_PUBLIC_IP) "sudo dnf install -y ~/gcs-app-2.8.x-1.noarch.rpm"
       
