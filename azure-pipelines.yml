@@ -4,15 +4,40 @@
 # https://aka.ms/yaml
 
 trigger:
-- master
+- none
 
 pool:
-  vmImage: "Ubuntu 20.04"
+  vmImage: ubuntu-latest
 
 steps:
-- script: echo "Compilar y correr las pruebas unitarias"
-  displayName: 'Commit Check'
-
-- script: |
-    echo "Correr las pruebas de integracion"
-  displayName: 'Integration Tests'
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
+      echo 'Preparar ambiente' 
+      sudo apt-get -y update
+      sudo apt-get -y install curl 
+      echo "deb https://dl.bintray.com/sbt/debian /" | sudo tee -a /etc/apt/sources.list.d/sbt.list
+      sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 2EE0EA64E40A89B84B2DF73499E82A75642AC823
+      sudo apt-get -y update
+      sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
+      sudo apt-get -y update
+      sudo apt-get -y install sbt git debianutils rpm ssh
+      echo $(PIPELINES_SSH_KEY) | base64 -di > ~/temp.pem
+      sudo chmod 600 ~/temp.pem
+      #cat temp.pem
+      #echo 'Hola' > archivo.txt
+      #scp -o "StrictHostKeyChecking no" -i temp.pem archivo.txt azureuser@40.74.228.20:.
+      echo 'Compilando app'
+      git clone https://github.com/arielvega/proyecto-gcs
+      cd proyecto-gcs
+      sbt compile
+      echo 'app  Compilada'
+      echo 'Ejecutando pruebas unitarias'
+      sbt test
+      echo 'Pruebas unitarias ejecutadas'
+      echo 'Empaquetando'
+      sbt rpm:packageBin
+      echo 'Empaquetado'
+      echo 'Desplegar'
+      scp -o "StrictHostKeyChecking no" -i ~/temp.pem /home/vsts/work/1/s/proyecto-gcs/gcs-app/target/rpm/RPMS/noarch/gcs-app-2.8.x-1.noarch.rpm azureuser@40.74.228.20:.
