@@ -36,7 +36,8 @@ steps:
       echo 'Ejecutando pruebas de integracion'
       sudo systemctl start docker
       sudo docker run -d -e POSTGRES_PASSWORD=gcs -e POSTGRES_USER=gcs -e POSTGRES_DB=gcs -p 127.0.0.1:5432:5432 postgres:9.5
-      while !</dev/tcp/db/5432; do 
+      export PGPASSWORD='gcs'
+      until psql -h "127.0.0.1" -U "gcs" -c '\l'; do
         >&2 echo "Database no esta lista - esperando..."
         sleep 1
       done
