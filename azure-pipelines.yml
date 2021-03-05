@@ -23,8 +23,6 @@ steps:
       sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
       sudo apt-get -y update
       sudo apt-get -y install sbt git debianutils rpm ssh postgresql-client-common
-      echo $(PIPELINES_SSH_KEY) | base64 -di > ~/temp.pem
-      sudo chmod 600 ~/temp.pem
       echo 'Compilando app'
       git clone https://github.com/arielvega/proyecto-gcs
       cd proyecto-gcs
@@ -49,4 +47,7 @@ steps:
       mv $(Agent.BuildDirectory)/s/proyecto-gcs/gcs-app/target/rpm/RPMS/noarch/gcs-app-2.8.x-1.noarch.rpm ~/gcs-app-2.8.x-1.noarch.rpm
       echo 'Empaquetado'
       echo 'Desplegar'
-      #scp -o "StrictHostKeyChecking no" -i ~/temp.pem ~/gcs-app-2.8.x-1.noarch.rpm azureuser@40.74.228.20:.
+      mkdir ./.ssh/
+      echo $(PIPELINES_SSH_KEY) | base64 -di > ~/.ssh/id_rsa
+      sudo chmod 600 ~/.ssh/id_rsa
+      scp -o "StrictHostKeyChecking no" ~/gcs-app-2.8.x-1.noarch.rpm azureuser@$(WEBSERVER_PUBLIC_IP):.
