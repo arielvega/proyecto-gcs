@@ -25,9 +25,6 @@ steps:
       sudo apt-get -y install sbt git debianutils rpm ssh
       echo $(PIPELINES_SSH_KEY) | base64 -di > ~/temp.pem
       sudo chmod 600 ~/temp.pem
-      #cat temp.pem
-      #echo 'Hola' > archivo.txt
-      #scp -o "StrictHostKeyChecking no" -i temp.pem archivo.txt azureuser@40.74.228.20:.
       echo 'Compilando app'
       git clone https://github.com/arielvega/proyecto-gcs
       cd proyecto-gcs
