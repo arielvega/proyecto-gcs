@@ -29,14 +29,33 @@ steps:
       sudo curl -fsSL https://download.docker.com/linux/ubuntu/gpg | sudo gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg
       sudo apt -y update
       sudo apt -y install sbt git debianutils rpm ssh postgresql-client-common
+      echo 'Ambiente listo'
+  displayName: 'Preparar ambiente'
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
       echo 'Compilando app'
       git clone https://github.com/arielvega/proyecto-gcs
       cd proyecto-gcs
       sbt compile
       echo 'app  Compilada'
+  displayName: 'Compilando app'
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: | 
       echo 'Ejecutando pruebas unitarias'
       sbt test
       echo 'Pruebas unitarias ejecutadas'
+  displayName: 'Pruebas unitarias'
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
       echo 'Ejecutando pruebas de integracion'
       sudo systemctl start docker
       sudo docker run -d -e POSTGRES_PASSWORD=gcs -e POSTGRES_USER=gcs -e POSTGRES_DB=gcs -p 127.0.0.1:5432:5432 postgres:9.5
@@ -49,17 +68,30 @@ steps:
       sudo bash -c "echo '127.0.0.1    dbserver' >> /etc/hosts"
       sbt "project gcsAppIT" test
       echo 'Pruebas de integracion ejecutadas'
+  displayName: 'Pruebas de integracion'
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
       echo 'Empaquetando'
       sbt rpm:packageBin
       mv $(Agent.BuildDirectory)/s/proyecto-gcs/gcs-app/target/rpm/RPMS/noarch/gcs-app-2.8.x-1.noarch.rpm ~/gcs-app-2.8.x-1.noarch.rpm
       echo 'Empaquetado'
+  displayName: 'Empaquetando'
+
+- task: Bash@3
+  inputs:
+    targetType: 'inline'
+    script: |
       echo 'Desplegar'
       mkdir ~/.ssh
       echo $(PIPELINES_SSH_KEY) | base64 -di > ~/.ssh/id_rsa
       sudo chmod 600 ~/.ssh/id_rsa
       ssh -o "StrictHostKeyChecking no" azureuser@$(WEBSERVER_PUBLIC_IP) "sudo sed -i '/dbserver/d' /etc/hosts"
       ssh -o "StrictHostKeyChecking no" azureuser@$(WEBSERVER_PUBLIC_IP) "sudo bash -c \"echo '$(DATABASE_LOCAL_IP)    dbserver' >> /etc/hosts\""
-      ssh -o "StrictHostKeyChecking no" azureuser@$(WEBSERVER_PUBLIC_IP) "sudo rpm -e gcs-app"
       scp -o "StrictHostKeyChecking no" ~/gcs-app-2.8.x-1.noarch.rpm azureuser@$(WEBSERVER_PUBLIC_IP):.
       ssh -o "StrictHostKeyChecking no" azureuser@$(WEBSERVER_PUBLIC_IP) "sudo dnf install -y ~/gcs-app-2.8.x-1.noarch.rpm"
+  displayName: 'Desplegar'
+
       
