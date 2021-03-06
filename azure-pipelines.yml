@@ -76,7 +76,7 @@ steps:
     script: |
       echo 'Empaquetando'
       sbt rpm:packageBin
-      mv $(Agent.BuildDirectory)/s/proyecto-gcs/gcs-app/target/rpm/RPMS/noarch/gcs-app-2.8.x-1.noarch.rpm ~/gcs-app-2.8.x-1.noarch.rpm
+      mv $(Agent.BuildDirectory)/s/gcs-app/target/rpm/RPMS/noarch/gcs-app-2.8.x-1.noarch.rpm ~/gcs-app-2.8.x-1.noarch.rpm
       echo 'Empaquetado'
   displayName: 'Empaquetando'
 
